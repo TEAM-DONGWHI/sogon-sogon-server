@@ -34,4 +34,37 @@ public class PostController {
                 .build();
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+    @PutMapping("/{postId}")
+    public ResponseEntity<ApiResponse<Object>> updatePost(
+            @PathVariable Long postId,
+            @RequestBody PostRequestDto requestDto,
+            @AuthenticationPrincipal com.dongwhi.sogonsogon.global.security.details.CustomUserDetails userDetails) {
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        com.dongwhi.sogonsogon.domain.user.entity.User user = userDetails.user();
+        try {
+            postService.updatePost(postId, requestDto, user);
+            ApiResponse<Object> response = ApiResponse.builder()
+                    .data(new java.util.HashMap<>())
+                    .status(0)
+                    .message("게시물 수정 성공")
+                    .build();
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            ApiResponse<Object> response = ApiResponse.builder()
+                    .data(new java.util.HashMap<>())
+                    .status(404)
+                    .message(e.getMessage())
+                    .build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        } catch (SecurityException e) {
+            ApiResponse<Object> response = ApiResponse.builder()
+                    .data(new java.util.HashMap<>())
+                    .status(403)
+                    .message(e.getMessage())
+                    .build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+        }
+    }
 }

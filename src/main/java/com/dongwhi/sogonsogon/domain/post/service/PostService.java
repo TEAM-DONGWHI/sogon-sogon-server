@@ -21,4 +21,20 @@ public class PostService {
                 .build();
         return postRepository.save(post);
     }
+
+    @Transactional
+    public void updatePost(Long postId, PostRequestDto requestDto, com.dongwhi.sogonsogon.domain.user.entity.User user) {
+        Post post = postRepository.findById(postId)
+            .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
+        if (!post.getUser().getId().equals(user.getId())) {
+            throw new SecurityException("본인 게시글만 수정할 수 있습니다.");
+        }
+        post = Post.builder()
+            .id(post.getId())
+            .title(requestDto.getTitle())
+            .content(requestDto.getContent())
+            .user(user)
+            .build();
+        postRepository.save(post);
+    }
 }
