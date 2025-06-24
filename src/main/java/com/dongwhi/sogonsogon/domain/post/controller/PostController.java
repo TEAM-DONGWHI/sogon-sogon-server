@@ -3,8 +3,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import com.dongwhi.sogonsogon.domain.post.dto.PostRequestDto;
 import com.dongwhi.sogonsogon.global.common.ApiResponse;
-import com.dongwhi.sogonsogon.domain.post.dto.PostResponseDto;
-import com.dongwhi.sogonsogon.domain.post.entity.Post;
 import com.dongwhi.sogonsogon.domain.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
