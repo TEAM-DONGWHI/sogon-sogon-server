@@ -72,4 +72,18 @@ public class PostService {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    @Transactional
+    public void deletePost(Long postId) {
+        User user = securityUtil.currentUser();
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new CustomException("게시글이 존재하지 않습니다", HttpStatus.NOT_FOUND));
+
+        if (!post.getUser().getId().equals(user.getId())) {
+            throw new CustomException("본인 게시글만 삭제할 수 있습니다", HttpStatus.FORBIDDEN);
+        }
+
+        postRepository.delete(post);
+    }
 }

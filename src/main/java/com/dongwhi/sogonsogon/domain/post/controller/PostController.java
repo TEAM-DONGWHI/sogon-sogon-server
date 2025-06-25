@@ -39,4 +39,12 @@ public class PostController {
         List<PostListResponseDto> posts = postService.getPosts();
         return BaseResponse.of(posts, "게시물 목록 조회 성공");
     }
+
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<BaseResponse<Void>> deletePost(
+            @PathVariable Long postId) {
+
+        postService.deletePost(postId);
+        return BaseResponse.of(null, "게시물 삭제 성공");
+    }
 }
