@@ -1,9 +1,14 @@
 package com.dongwhi.sogonsogon.domain.post.service;
 
 import com.dongwhi.sogonsogon.domain.post.dto.PostRequestDto;
+import com.dongwhi.sogonsogon.domain.post.dto.PostResponseDto;
 import com.dongwhi.sogonsogon.domain.post.entity.Post;
 import com.dongwhi.sogonsogon.domain.post.repository.PostRepository;
+import com.dongwhi.sogonsogon.domain.user.entity.User;
+import com.dongwhi.sogonsogon.global.exception.CustomException;
+import com.dongwhi.sogonsogon.global.security.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,30 +16,46 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
+    private final SecurityUtil securityUtil;
 
     @Transactional
-    public Post createPost(PostRequestDto requestDto, com.dongwhi.sogonsogon.domain.user.entity.User user) {
+    public PostResponseDto createPost(PostRequestDto requestDto) {
+        User user = securityUtil.currentUser();
+
         Post post = Post.builder()
                 .title(requestDto.getTitle())
                 .content(requestDto.getContent())
                 .user(user)
                 .build();
-        return postRepository.save(post);
+
+        Post savedPost = postRepository.save(post);
+
+        // 서비스에서 ResponseDto 생성하여 반환
+        return PostResponseDto.builder()
+                .postId(savedPost.getId())
+                .title(savedPost.getTitle())
+                .content(savedPost.getContent())
+                .userId(savedPost.getUser().getId())
+                .build();
     }
 
     @Transactional
-    public void updatePost(Long postId, PostRequestDto requestDto, com.dongwhi.sogonsogon.domain.user.entity.User user) {
+    public void updatePost(Long postId, PostRequestDto requestDto) {
+        User user = securityUtil.currentUser();
+
         Post post = postRepository.findById(postId)
-            .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException("게시글이 존재하지 않습니다", HttpStatus.NOT_FOUND));
+
         if (!post.getUser().getId().equals(user.getId())) {
-            throw new SecurityException("본인 게시글만 수정할 수 있습니다.");
+            throw new CustomException("본인 게시글만 수정할 수 있습니다", HttpStatus.FORBIDDEN);
         }
-        post = Post.builder()
-            .id(post.getId())
-            .title(requestDto.getTitle())
-            .content(requestDto.getContent())
-            .user(user)
-            .build();
-        postRepository.save(post);
+
+        Post updatedPost = Post.builder()
+                .id(post.getId())
+                .title(requestDto.getTitle())
+                .content(requestDto.getContent())
+                .user(user)
+                .build();
+        postRepository.save(updatedPost);
     }
 }
