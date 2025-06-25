@@ -50,10 +50,8 @@ public class PostService {
         }
 
         Post updatedPost = post.toBuilder()
-                .id(post.getId())
                 .title(requestDto.getTitle())
                 .content(requestDto.getContent())
-                .user(user)
                 .build();
         postRepository.save(updatedPost);
     }
