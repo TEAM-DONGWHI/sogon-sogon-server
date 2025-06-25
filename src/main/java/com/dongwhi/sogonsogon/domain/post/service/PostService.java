@@ -30,7 +30,6 @@ public class PostService {
 
         Post savedPost = postRepository.save(post);
 
-        // 서비스에서 ResponseDto 생성하여 반환
         return PostResponseDto.builder()
                 .postId(savedPost.getId())
                 .title(savedPost.getTitle())
@@ -50,7 +49,7 @@ public class PostService {
             throw new CustomException("본인 게시글만 수정할 수 있습니다", HttpStatus.FORBIDDEN);
         }
 
-        Post updatedPost = Post.builder()
+        Post updatedPost = post.toBuilder()
                 .id(post.getId())
                 .title(requestDto.getTitle())
                 .content(requestDto.getContent())
