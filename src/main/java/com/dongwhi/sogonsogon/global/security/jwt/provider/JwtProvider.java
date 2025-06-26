@@ -68,7 +68,7 @@ public class JwtProvider {
             throw new CustomException("유효하지 않은 토큰",  HttpStatus.UNAUTHORIZED);
         }
 
-        User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(() -> new CustomException("사용자를 찾지 못함", HttpStatus.NOT_FOUND));
+        User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(() -> new CustomException("찾을 수 없는 유저", HttpStatus.NOT_FOUND));
 
         UserDetails details = new CustomUserDetails(user);
 
@@ -97,13 +97,13 @@ public class JwtProvider {
                     .parseSignedClaims(token)
                     .getPayload();
         } catch (ExpiredJwtException e) {
-            throw new CustomException("", HttpStatus.BAD_REQUEST);
+            throw new CustomException("만료된 토큰", HttpStatus.UNAUTHORIZED);
         } catch (UnsupportedJwtException e) {
-            throw new CustomException("    ", HttpStatus.BAD_REQUEST);
+            throw new CustomException("지원하지 않는 JWT 형식", HttpStatus.BAD_REQUEST);
         } catch (MalformedJwtException e) {
-            throw new CustomException("  ", HttpStatus.BAD_REQUEST);
+            throw new CustomException("잘못된 JWT 형식", HttpStatus.BAD_REQUEST);
         } catch (IllegalArgumentException e) {
-            throw new CustomException(" ", HttpStatus.BAD_REQUEST);
+            throw new CustomException("JWT 토큰이 존재하지 않거나 비어 있음", HttpStatus.BAD_REQUEST);
         }
     }
 

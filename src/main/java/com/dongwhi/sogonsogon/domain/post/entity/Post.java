@@ -1,6 +1,7 @@
 package com.dongwhi.sogonsogon.domain.post.entity;
 
 import com.dongwhi.sogonsogon.domain.user.entity.User;
+import com.dongwhi.sogonsogon.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,7 @@ import lombok.Builder;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class Post {
+public class Post extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
