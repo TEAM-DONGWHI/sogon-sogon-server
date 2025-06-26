@@ -37,7 +37,6 @@ public class PostService {
                 .postId(savedPost.getId())
                 .title(savedPost.getTitle())
                 .content(savedPost.getContent())
-                .userId(savedPost.getUser().getId())
                 .build();
     }
 
@@ -68,7 +67,6 @@ public class PostService {
                         .postId(post.getId())
                         .title(post.getTitle())
                         .content(post.getContent())
-                        .userId(post.getUser().getId())
                         .build())
                 .collect(Collectors.toList());
     }
