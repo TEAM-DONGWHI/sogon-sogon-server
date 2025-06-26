@@ -70,10 +70,10 @@ public class UserService {
             throw new CustomException("잘못된 비밀번호", HttpStatus.BAD_REQUEST);
         }
 
-        user.toBuilder()
+        User updatedUser = user.toBuilder()
                 .password(passwordEncoder.encode(request.getNewPassword()))
                 .build();
 
-        userRepository.save(user);
+        userRepository.save(updatedUser);
     }
 }
