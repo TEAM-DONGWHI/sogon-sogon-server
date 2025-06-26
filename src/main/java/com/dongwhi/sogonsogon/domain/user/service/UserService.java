@@ -27,13 +27,12 @@ public class UserService {
 
     public void signup(SignUpRequest request) {
          if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-            throw new CustomException("이미 존재하는 유저이름",  HttpStatus.CONFLICT);
+            throw new CustomException("이미 존재하는 유저 이름",  HttpStatus.CONFLICT);
         }
 
         User user = User.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .name(request.getName())
                 .role(UserRole.USER)
                 .build();
 
